@@ -1,0 +1,220 @@
+---
+import { primaryContact, site } from '../data/site';
+import { heroImage } from '../data/gallery';
+import Media from './Media.astro';
+---
+
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <div class="wrap grid hero__grid">
+    <p class="meta label">
+      <span>{site.descriptor}</span>
+      <span class="loc">{site.address.area}, {site.address.city}</span>
+    </p>
+
+    <h1 class="masthead display" id="hero-title">
+      <span class="la">La</span>{" "}
+      <span class="llorona">Llorona</span>
+      <span class="visually-hidden">, estudio de tatuaje en {site.address.area}, {site.address.city}</span>
+    </h1>
+
+    <div class="copy">
+      <p class="tagline shout">Pa que llore mi mare,<br />que llore la tuya.</p>
+      <p class="sub">
+        Estudio privado de tatuaje en {site.address.area} con un equipo de residentes: realismo en negro y gris,
+        color, línea fina y diseños pensados para ti.
+      </p>
+      <div class="actions">
+        <a class="btn btn--primary" href={primaryContact.href} target="_blank" rel="noopener">
+          Pide tu cita
+        </a>
+        <a class="btn btn--ghost" href="#trabajos">Explora los trabajos</a>
+      </div>
+    </div>
+
+    <figure class="photo">
+      <Media
+        image={heroImage.image}
+        alt={heroImage.alt}
+        aspect="4 / 5"
+        sizes="(min-width: 960px) 38vw, 100vw"
+        priority
+        position={heroImage.position}
+      />
+      <figcaption class="label">
+        <span>{heroImage.caption}</span>
+      </figcaption>
+    </figure>
+
+    <p class="side label" aria-hidden="true">{site.address.street}, {site.address.area}</p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding-block: var(--space-m) var(--space-xl);
+    margin-top: calc(var(--header-h) * -1);
+    padding-top: calc(var(--header-h) + var(--space-m));
+    overflow: hidden;
+  }
+
+  .hero__grid {
+    row-gap: var(--space-m);
+    align-items: start;
+  }
+
+  .meta,
+  .masthead,
+  .copy,
+  .photo {
+    grid-column: 1 / -1;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    color: var(--oak);
+    padding-bottom: var(--space-s);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .meta .loc {
+    margin-left: auto;
+    color: var(--bone-dim);
+  }
+
+  .masthead {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(5.2rem, 24vw, 12.5rem);
+    margin-top: var(--space-xs);
+  }
+
+  .masthead .la {
+    font-size: 0.42em;
+    line-height: 1;
+    color: var(--bone-dim);
+    font-weight: 500;
+    padding-left: 0.08em;
+  }
+
+  .masthead .llorona {
+    margin-top: -0.06em;
+  }
+
+  .copy {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .tagline {
+    font-size: clamp(1.9rem, 8.4vw, 3.4rem);
+  }
+
+  .sub {
+    max-width: 40ch;
+    color: var(--bone-dim);
+    text-wrap: pretty;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .actions .btn {
+    flex: 1 1 13rem;
+  }
+
+  .photo {
+    position: relative;
+    margin-top: var(--space-s);
+  }
+
+  .photo figcaption {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.6rem;
+    color: var(--oak);
+  }
+
+  .side {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .actions .btn {
+      flex: 0 0 auto;
+    }
+    .photo {
+      max-width: 34rem;
+      justify-self: end;
+      width: 80%;
+      margin-top: calc(var(--space-xl) * -0.5);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .hero {
+      min-height: min(100svh, 980px);
+      display: flex;
+      align-items: center;
+      padding-bottom: var(--space-l);
+    }
+
+    .hero__grid {
+      width: 100%;
+      grid-template-rows: auto auto 1fr auto;
+      row-gap: var(--space-l);
+    }
+
+    .meta {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    .masthead {
+      grid-column: 1 / 9;
+      grid-row: 2;
+      font-size: clamp(7rem, 15.5vw, 16.5rem);
+      position: relative;
+      z-index: 1;
+    }
+
+    .copy {
+      grid-column: 1 / 7;
+      grid-row: 3;
+      align-self: start;
+    }
+
+    .photo {
+      grid-column: 8 / -1;
+      grid-row: 2 / 5;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      align-self: center;
+    }
+
+    .side {
+      display: block;
+      position: absolute;
+      right: calc(var(--gutter) * 0.25);
+      top: 50%;
+      writing-mode: vertical-rl;
+      transform: translateY(-50%);
+      color: var(--bone-dim);
+      opacity: 0.7;
+      grid-column: auto;
+    }
+  }
+
+  @media (min-width: 960px) and (max-height: 760px) {
+    .masthead {
+      font-size: clamp(6rem, 10vw, 10rem);
+    }
+  }
+</style>

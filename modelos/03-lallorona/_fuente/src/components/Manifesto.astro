@@ -1,0 +1,118 @@
+---
+import { poster } from "../data/gallery";
+import Media from "./Media.astro";
+
+// Texto provisional: pendiente de aprobación por el estudio.
+const principles = [
+  { title: 'Escuchar', text: 'Nos cuentas la idea, una referencia o solo la sensación que buscas. Con eso basta para empezar.' },
+  { title: 'Dibujar para ti', text: 'El diseño se adapta a tu zona, a tu tamaño y a cómo lo vas a llevar, no a un catálogo.' },
+  { title: 'Elegir a quién', text: 'Varios residentes, varios estilos. Te orientamos hacia la mano que mejor encaja con tu idea.' },
+];
+---
+
+<section class="section paper manifesto" id="nosotros" aria-labelledby="manifiesto-title">
+  <div class="wrap">
+    <p class="kicker label">La casa</p>
+
+    <div class="layout">
+      <div class="lead-col">
+        <h2 class="h2 quote" id="manifiesto-title" data-reveal>
+          Primero se habla.<br />Luego se dibuja.
+        </h2>
+        <figure class="poster" data-reveal style="--delay:.1s">
+          <Media image={poster.image} alt={poster.alt} aspect="4 / 3" sizes="(min-width: 960px) 40vw, 100vw" />
+          <figcaption class="label">Cartel de la casa</figcaption>
+        </figure>
+      </div>
+
+      <div class="body">
+        <p class="lede" data-reveal>
+          No hay dos tatuajes iguales porque no hay dos personas iguales. Antes de tocar la piel escuchamos qué quieres
+          llevar contigo y lo convertimos en un diseño que sea tuyo de verdad.
+        </p>
+
+        <ul class="principles" role="list">
+          {
+            principles.map((p, i) => (
+              <li data-reveal style={`--delay:${i * 0.08}s`}>
+                <h3 class="h3">{p.title}</h3>
+                <p>{p.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    overflow: hidden;
+  }
+
+  .layout {
+    display: grid;
+    gap: var(--space-xl);
+    position: relative;
+  }
+
+  .lead-col {
+    display: grid;
+    gap: var(--space-l);
+    align-content: start;
+  }
+
+  .poster {
+    max-width: 34rem;
+  }
+
+  .poster :global(.media) {
+    transform: rotate(-1.5deg);
+    box-shadow: 0 18px 40px -20px rgb(14 13 12 / 0.45);
+  }
+
+  .poster figcaption {
+    padding-top: 0.6rem;
+    color: var(--oak-deep);
+  }
+
+  .body {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .principles {
+    display: grid;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .principles li {
+    display: grid;
+    gap: 0.4rem;
+    padding-block: var(--space-m);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .principles p {
+    max-width: 44ch;
+    color: var(--color-muted);
+  }
+
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+    }
+    .lead-col {
+      grid-column: 1 / 7;
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-l));
+      align-self: start;
+    }
+    .body {
+      grid-column: 8 / -1;
+      padding-top: 1rem;
+    }
+  }
+</style>

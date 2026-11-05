@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import WorkStream from '../components/WorkStream.astro';
+import Icon from '../components/Icon.astro';
+import { works } from '../data/gallery';
+import { site } from '../data/site';
+---
+
+<Layout
+  title="Trabajos · La Llorona"
+  description="Todos los trabajos de los residentes de La Llorona, estudio privado de tatuaje en Montequinto (Sevilla)."
+>
+  <section class="section archive" aria-labelledby="archivo-title">
+    <div class="wrap">
+      <a class="back label" href="/#trabajos"><span aria-hidden="true">←</span> Volver al inicio</a>
+
+      <header class="head">
+        <p class="kicker label">Trabajos · {String(works.length).padStart(2, '0')} piezas</p>
+        <h1 class="h2" id="archivo-title" data-reveal>Todo lo hecho aquí.</h1>
+        <p class="lede muted" data-reveal style="--delay:.1s">
+          El archivo completo de piezas de los residentes. Lo último que sale de las máquinas se publica primero en
+          Instagram.
+        </p>
+      </header>
+
+      <WorkStream works={works} />
+
+      <div class="end" data-rise>
+        <p class="h3">¿Buscas un estilo concreto?</p>
+        <p class="muted">Pregunta y te decimos quién encaja mejor con tu idea.</p>
+        <div class="end__actions">
+          <a class="btn btn--primary" href="/#cita">Pide tu cita</a>
+          <a class="btn btn--ghost" href={site.instagram.url} target="_blank" rel="noopener">
+            <Icon name="instagram" /> Ver más en Instagram
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .archive {
+    padding-top: calc(var(--header-h) + var(--space-l));
+  }
+
+  .back {
+    display: inline-flex;
+    gap: 0.5rem;
+    min-height: var(--tap);
+    align-items: center;
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+
+  .back:hover {
+    color: var(--tear);
+  }
+
+  .head {
+    display: grid;
+    gap: var(--space-s);
+    max-width: 52rem;
+    margin-block: var(--space-l) var(--space-2xl);
+  }
+
+  .end {
+    display: grid;
+    gap: var(--space-s);
+    justify-items: center;
+    margin-top: var(--space-2xl);
+    padding-block: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+    opacity: var(--r, 1);
+    transform: translate3d(0, calc((1 - var(--r, 1)) * 4rem), 0);
+  }
+
+  .end__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-s);
+  }
+
+  .end :global(svg) {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+</style>

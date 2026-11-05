@@ -1,0 +1,203 @@
+---
+import { artists } from '../data/artists';
+import { resolveImage } from '../lib/images';
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+
+const rows = artists.map((a, i) => ({ ...a, n: String(i + 1).padStart(2, '0'), img: resolveImage(a.photo) }));
+---
+
+<section class="section residents" id="residentes" aria-labelledby="residentes-title">
+  <div class="wrap">
+    <p class="kicker label">Residentes</p>
+
+    <div class="head">
+      <h2 class="h2" id="residentes-title" data-reveal>Muchas manos,<br />una casa.</h2>
+      <p class="lede muted" data-reveal style="--delay:.1s">
+        Cada residente tiene su estilo y su agenda. Si ya sabes con quién quieres tatuarte, dilo al escribirnos.
+        Si no, te ayudamos a elegir.
+      </p>
+    </div>
+
+    <ol class="list" role="list">
+      {
+        rows.map((a) => (
+          <li class="row" data-reveal>
+            <span class="label num">{a.n}</span>
+            {a.img && (
+              <Picture src={a.img} alt={`Retrato de ${a.name}`} formats={['avif', 'webp']} widths={[160, 320]} sizes="5rem" class="avatar" />
+            )}
+            <h3 class="name display">
+              {a.name}
+              {a.tag && (
+                <span class="tag label">
+                  <span class="visually-hidden"> (</span>
+                  {a.tag}
+                  <span class="visually-hidden">)</span>
+                </span>
+              )}
+            </h3>
+            {a.styles?.length ? <p class="styles muted">{a.styles.join(', ')}</p> : <span class="styles" />}
+            {a.instagram ? (
+              <a class="link label" href={`https://www.instagram.com/${a.instagram}/`} target="_blank" rel="noopener">
+                @{a.instagram}
+                <Icon name="arrow" />
+              </a>
+            ) : (
+              <a class="link label" href="#cita" data-pick-artist={a.name}>
+                Pedir con {a.name}
+                <Icon name="arrow" />
+              </a>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .head {
+    display: grid;
+    gap: var(--space-m);
+    margin-bottom: var(--space-xl);
+    align-items: end;
+  }
+
+  @media (min-width: 960px) {
+    .head {
+      grid-template-columns: 1fr minmax(0, 26rem);
+    }
+  }
+
+  .list {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    height: 1px;
+    width: 100%;
+    background: var(--tear);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s var(--ease);
+  }
+
+  .row:hover::before,
+  .row:focus-within::before {
+    transform: scaleX(1);
+  }
+
+  .num {
+    color: var(--oak);
+  }
+
+  .row :global(.avatar) {
+    display: none;
+  }
+
+  .name {
+    font-size: clamp(2.6rem, 9vw, 5.5rem);
+    line-height: 0.95;
+    transition:
+      transform 0.5s var(--ease),
+      color 0.3s;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .row:hover .name {
+    transform: translateX(0.4rem);
+    color: var(--tear);
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    color: var(--oak);
+    border: 1px solid currentColor;
+    padding: 0.2em 0.4em;
+    margin-top: 0.6em;
+  }
+
+  .styles {
+    display: none;
+  }
+
+  .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: var(--tap);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    font-size: 0.9rem;
+    color: var(--bone-dim);
+    transition: color 0.2s;
+  }
+
+  /* Toda la fila es pulsable */
+  .link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .link :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .row:hover .link {
+    color: var(--bone);
+  }
+
+  .row:hover .link :global(svg) {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 639px) {
+    .link {
+      font-size: 0;
+      gap: 0;
+    }
+    .link :global(svg) {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .row {
+      grid-template-columns: 4rem auto 1fr auto;
+    }
+    .row :global(.avatar) {
+      display: block;
+      position: absolute;
+      left: 4rem;
+      width: 5rem;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+    }
+    .styles {
+      display: block;
+      text-align: right;
+      padding-right: 2rem;
+    }
+  }
+</style>

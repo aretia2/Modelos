@@ -1,0 +1,293 @@
+---
+import { nav, primaryContact } from '../data/site';
+import Icon from './Icon.astro';
+import Wordmark from './Wordmark.astro';
+---
+
+<header class="site-header" data-header>
+  <div class="wrap bar">
+    <a class="brand" href="/" aria-label="La Llorona, ir al inicio">
+      <Wordmark />
+    </a>
+
+    <nav class="desktop-nav" aria-label="Principal">
+      <ul role="list">
+        {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <a class="btn btn--primary cta" href={primaryContact.href} target="_blank" rel="noopener">
+      Pide tu cita
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-open
+    >
+      <span class="label">Menú</span>
+      <span class="burger" aria-hidden="true"><span></span><span></span></span>
+    </button>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menú" hidden data-menu>
+    <div class="wrap mobile-menu__top">
+      <a class="brand" href="/" aria-label="La Llorona, ir al inicio" data-menu-link><Wordmark /></a>
+      <button class="menu-close" type="button" data-menu-close>
+        <span class="label">Cerrar</span>
+        <Icon name="close" />
+      </button>
+    </div>
+    <nav class="wrap mobile-menu__nav" aria-label="Principal (móvil)">
+      <ol role="list">
+        {
+          nav.map((item, i) => (
+            <li style={`--i:${i}`}>
+              <a href={item.href} data-menu-link>
+                <span class="display">{item.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+    <div class="wrap mobile-menu__foot">
+      <a class="btn btn--primary" href={primaryContact.href} target="_blank" rel="noopener">
+        Pide tu cita por {primaryContact.channel}
+      </a>
+      <p class="label muted">Private studio en Montequinto, Sevilla</p>
+    </div>
+  </div>
+</header>
+
+<script>
+  import '../scripts/menu';
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--header-h);
+  }
+
+  /* El desenfoque va en un pseudoelemento: si estuviera en la cabecera,
+     el menú móvil (position: fixed) quedaría atrapado dentro de ella. */
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(14 13 12 / 0.86);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border);
+    opacity: 0;
+    transition: opacity 0.35s var(--ease);
+  }
+
+  .site-header.is-scrolled::before {
+    opacity: 1;
+  }
+
+  .bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+  }
+
+  .brand {
+    text-decoration: none;
+    margin-right: auto;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .desktop-nav ul {
+    display: flex;
+    gap: clamp(1.25rem, 2.2vw, 2.25rem);
+  }
+
+  .desktop-nav a {
+    position: relative;
+    font-variation-settings: 'wdth' 75;
+    font-weight: 600;
+    font-size: 0.86rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding-block: 0.5rem;
+    color: var(--bone-dim);
+    transition: color 0.2s;
+  }
+
+  .desktop-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.2rem;
+    height: 1px;
+    background: var(--tear);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease);
+  }
+
+  .desktop-nav a:hover {
+    color: var(--bone);
+  }
+
+  .desktop-nav a:hover::after {
+    transform: scaleX(1);
+  }
+
+  .cta {
+    display: none;
+    min-height: 2.6rem;
+    padding: 0.55rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .menu-toggle,
+  .menu-close {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.75rem;
+    padding: 0 0.25rem 0 0.75rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .menu-close :global(svg) {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .burger {
+    display: grid;
+    gap: 6px;
+    width: 24px;
+  }
+
+  .burger span {
+    height: 1.5px;
+    background: currentColor;
+  }
+
+  .burger span:last-child {
+    width: 66%;
+    justify-self: end;
+  }
+
+  @media (min-width: 960px) {
+    .desktop-nav,
+    .cta {
+      display: block;
+    }
+    .cta {
+      display: inline-flex;
+    }
+    .menu-toggle {
+      display: none;
+    }
+  }
+
+  /* ---- Menú móvil ---- */
+
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    background: var(--ink);
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+  }
+
+  .mobile-menu[hidden] {
+    display: none;
+  }
+
+  .mobile-menu.is-open {
+    opacity: 1;
+  }
+
+  .mobile-menu__top {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    flex: none;
+  }
+
+  .mobile-menu__nav {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding-block: var(--space-l);
+  }
+
+  .mobile-menu__nav ol {
+    width: 100%;
+  }
+
+  .mobile-menu__nav li {
+    border-top: 1px solid var(--color-border);
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.5s var(--ease),
+      transform 0.5s var(--ease);
+    transition-delay: calc(0.06s * var(--i) + 0.08s);
+  }
+
+  .mobile-menu__nav li:last-child {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mobile-menu.is-open li {
+    opacity: 1;
+    transform: none;
+  }
+
+  .mobile-menu__nav a {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.9rem;
+    text-decoration: none;
+  }
+
+  .mobile-menu__nav .num {
+    color: var(--oak);
+    min-width: 2ch;
+  }
+
+  .mobile-menu__nav .display {
+    font-size: clamp(2.8rem, 13vw, 4.5rem);
+  }
+
+  .mobile-menu__nav a:hover .display,
+  .mobile-menu__nav a:focus-visible .display {
+    color: var(--tear);
+  }
+
+  .mobile-menu__foot {
+    display: grid;
+    gap: 1rem;
+    padding-bottom: max(var(--space-l), env(safe-area-inset-bottom));
+  }
+</style>

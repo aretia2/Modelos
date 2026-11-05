@@ -1,0 +1,97 @@
+---
+import { studioImages } from '../data/gallery';
+import { site, mapsUrl } from '../data/site';
+import Media from './Media.astro';
+import Icon from './Icon.astro';
+const [main] = studioImages;
+---
+
+<section class="section studio" id="estudio" aria-labelledby="estudio-title">
+  <div class="wrap">
+    <p class="kicker label">El estudio</p>
+
+    <div class="layout">
+      <figure class="main" data-reveal>
+        <Media
+          image={main?.image}
+          alt={main?.alt ?? 'Interior del estudio'}
+          aspect="5 / 4"
+          sizes="(min-width: 960px) 56vw, 100vw"
+          position="50% 52%"
+        />
+      </figure>
+
+      <div class="text">
+        <div class="top">
+          <h2 class="h2" id="estudio-title" data-reveal>Private studio.</h2>
+          <p class="lede" data-reveal style="--delay:.08s">
+            Un estudio privado en {site.address.area}. Aquí no se entra de paso: se viene a tatuarse, con tiempo y con
+            la persona que has elegido.
+          </p>
+          <p class="muted" data-reveal style="--delay:.12s">Escríbenos antes de venir y te decimos cuándo puede atenderte tu residente.</p>
+        </div>
+
+        <div class="bottom" data-reveal>
+          <address class="addr">
+            <Icon name="pin" />
+            <span>{site.address.street}<br />{site.address.area}, {site.address.city}</span>
+          </address>
+          <a class="btn btn--ghost" href={mapsUrl} target="_blank" rel="noopener">Cómo llegar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-l);
+  }
+
+  .top {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s) var(--space-m);
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .addr {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-style: normal;
+    line-height: 1.4;
+  }
+
+  .addr :global(svg) {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex: none;
+    margin-top: 0.15rem;
+    color: var(--oak);
+  }
+
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--space-xl);
+      align-items: stretch;
+    }
+  }
+</style>

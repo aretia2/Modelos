@@ -1,0 +1,155 @@
+---
+import { site, mapsUrl, phoneHref, whatsappUrl, primaryContact } from '../data/site';
+import Icon from './Icon.astro';
+const wa = whatsappUrl();
+---
+
+<section class="section contact" id="contacto" aria-labelledby="contacto-title">
+  <div class="wrap">
+    <p class="kicker label">Contacto</p>
+
+    <div class="layout">
+      <div class="where">
+        <h2 class="h2" id="contacto-title">Dónde<br />encontrarnos.</h2>
+        <address class="address">
+          <span class="display street">{site.address.street}</span>
+          <span class="label muted">
+            {site.address.postalCode && `${site.address.postalCode} `}{site.address.area}, {site.address.city}
+          </span>
+        </address>
+        <div class="actions">
+          <a class="btn btn--primary" href={primaryContact.href} target="_blank" rel="noopener">
+            Pide tu cita
+          </a>
+          <a class="btn btn--ghost" href={mapsUrl} target="_blank" rel="noopener">
+            <Icon name="pin" /> Cómo llegar
+          </a>
+        </div>
+      </div>
+
+      <dl class="details">
+        <div>
+          <dt class="label">Instagram</dt>
+          <dd>
+            <a class="text-link tap" href={site.instagram.url} target="_blank" rel="noopener">@{site.instagram.handle}</a>
+            <span class="muted note">Mensaje directo para citas y dudas.</span>
+          </dd>
+        </div>
+        {
+          wa && (
+            <div>
+              <dt class="label">WhatsApp</dt>
+              <dd>
+                <a class="text-link tap" href={wa} target="_blank" rel="noopener">Escribir por WhatsApp</a>
+              </dd>
+            </div>
+          )
+        }
+        {
+          phoneHref && (
+            <div>
+              <dt class="label">Teléfono</dt>
+              <dd>
+                <a class="text-link tap" href={phoneHref}>{site.phone}</a>
+              </dd>
+            </div>
+          )
+        }
+        {
+          site.hours && (
+            <div>
+              <dt class="label">Horario</dt>
+              <dd>
+                <ul role="list">
+                  {site.hours.map(([d, h]) => (
+                    <li>
+                      {d}: {h}
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )
+        }
+        <div>
+          <dt class="label">Visitas</dt>
+          <dd>Estudio privado. Escríbenos antes de venir.</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  .where {
+    display: grid;
+    gap: var(--space-m);
+    align-content: start;
+  }
+
+  .address {
+    display: grid;
+    gap: 0.4rem;
+    font-style: normal;
+    padding-block: var(--space-s);
+  }
+
+  .street {
+    font-size: var(--step-3);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .actions .btn :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .details {
+    margin: 0;
+    display: grid;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .details > div {
+    display: grid;
+    gap: 0.4rem;
+    padding-block: var(--space-m);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  dt {
+    color: var(--oak);
+  }
+
+  dd {
+    margin: 0;
+    font-size: var(--step-1);
+  }
+
+  .note {
+    display: block;
+    font-size: 0.95rem;
+    margin-top: 0.2rem;
+  }
+
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: 7fr 5fr;
+      gap: var(--space-2xl);
+    }
+    .details > div {
+      grid-template-columns: 9rem 1fr;
+      align-items: baseline;
+    }
+  }
+</style>

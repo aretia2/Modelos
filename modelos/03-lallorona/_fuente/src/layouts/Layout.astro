@@ -1,0 +1,88 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+import { site, phoneHref } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Las páginas secundarias no muestran la barra fija de cita. */
+  mobileBar?: boolean;
+  noindex?: boolean;
+}
+
+const {
+  title = 'La Llorona · Estudio de tatuaje en Montequinto, Sevilla',
+  description = 'Estudio privado de tatuaje en Montequinto (Sevilla) con varios residentes: realismo en negro y gris, color, línea fina y diseños a medida. Pide tu cita por Instagram.',
+  mobileBar = true,
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL('/og.png', site.url).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TattooParlor',
+  name: site.name,
+  url: site.url,
+  image: ogImage,
+  sameAs: [site.instagram.url],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    addressLocality: site.address.area,
+    addressRegion: site.address.city,
+    addressCountry: site.address.country,
+    ...(site.address.postalCode ? { postalCode: site.address.postalCode } : {}),
+  },
+  ...(phoneHref ? { telephone: site.phone } : {}),
+};
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#0e0d0c" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="La Llorona, estudio de tatuaje en Montequinto, Sevilla" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <Header />
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    {mobileBar && <MobileBar />}
+
+    <script>
+      import "../scripts/reveal";
+    </script>
+  </body>
+</html>

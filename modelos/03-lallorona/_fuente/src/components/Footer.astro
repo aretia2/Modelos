@@ -1,0 +1,108 @@
+---
+import { site, nav, mapsUrl, phoneHref } from '../data/site';
+import Wordmark from './Wordmark.astro';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="top">
+      <a href="/" class="brand" aria-label="La Llorona, ir al inicio"><Wordmark size="lg" /></a>
+      <p class="label muted">Private studio en {site.address.area}, {site.address.city}</p>
+    </div>
+
+    <div class="cols">
+      <nav aria-label="Secundaria">
+        <p class="label head">Índice</p>
+        <ul role="list">
+          {nav.map((item) => <li><a class="text-link tap" href={item.href}>{item.label}</a></li>)}
+          <li><a class="text-link tap" href="/#cita">Pide tu cita</a></li>
+        </ul>
+      </nav>
+      <div>
+        <p class="label head">Dónde</p>
+        <address>
+          <a class="text-link" href={mapsUrl} target="_blank" rel="noopener">
+            {site.address.street}<br />{site.address.area}, {site.address.city}
+          </a>
+        </address>
+      </div>
+      <div>
+        <p class="label head">Contacto</p>
+        <ul role="list">
+          <li><a class="text-link tap" href={site.instagram.url} target="_blank" rel="noopener">@{site.instagram.handle}</a></li>
+          {phoneHref && <li><a class="text-link tap" href={phoneHref}>{site.phone}</a></li>}
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal">
+      <p>© {year} {site.name}</p>
+      <ul role="list">
+        <li><a class="text-link tap" href="/privacidad/">Privacidad y aviso legal</a></li>
+      </ul>
+      <p class="muted">Esta web no usa cookies ni analítica.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--color-border);
+    padding-block: var(--space-xl) var(--space-l);
+    font-size: 0.95rem;
+  }
+
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: var(--space-l);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .brand {
+    text-decoration: none;
+  }
+
+  .cols {
+    display: grid;
+    gap: var(--space-l);
+    padding-block: var(--space-l);
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  }
+
+  .head {
+    color: var(--oak);
+    margin-bottom: 0.75rem;
+  }
+
+  ul {
+    display: grid;
+    gap: 0;
+  }
+
+  address {
+    font-style: normal;
+  }
+
+  address a {
+    display: inline-block;
+    padding-block: 0.3rem;
+  }
+
+  .legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--color-border);
+    font-size: 0.85rem;
+  }
+
+  .legal p:last-child {
+    margin-left: auto;
+  }
+</style>

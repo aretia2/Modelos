@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Página no encontrada · La Llorona" mobileBar={false} noindex>
+  <section class="nf wrap">
+    <p class="label code">Error 404</p>
+    <h1 class="display">Aquí no hay<br />nada que llorar.</h1>
+    <p class="lede muted">La página que buscas no existe o se ha movido.</p>
+    <div class="actions">
+      <a class="btn btn--primary" href="/">Volver al inicio</a>
+      <a class="btn btn--ghost" href="/#trabajos">Ver trabajos</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .nf {
+    min-height: 70svh;
+    display: grid;
+    align-content: center;
+    gap: var(--space-m);
+    padding-block: var(--space-2xl);
+  }
+  .code {
+    color: var(--oak);
+  }
+  h1 {
+    font-size: var(--step-5);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+</style>

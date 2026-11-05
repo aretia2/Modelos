@@ -1,0 +1,111 @@
+---
+/**
+ * Foto optimizada (AVIF/WebP + srcset) o, si aún no existe, una placa provisional rotulada.
+ */
+import { Picture } from 'astro:assets';
+import { resolveImage } from '../lib/images';
+import Icon from './Icon.astro';
+
+interface Props {
+  image?: string;
+  alt: string;
+  /** Relación de aspecto CSS, p. ej. '4 / 5'. La foto se recorta para encajar. */
+  aspect: string;
+  sizes: string;
+  widths?: number[];
+  priority?: boolean;
+  /** Texto de la placa cuando falta la foto. */
+  placeholder?: string;
+  class?: string;
+  /** Punto focal del recorte, p. ej. '50% 30%'. */
+  position?: string;
+}
+
+const {
+  image,
+  alt,
+  aspect,
+  sizes,
+  widths = [480, 720, 960, 1280, 1600],
+  priority = false,
+  placeholder = 'Foto pendiente',
+  class: className,
+  position = '50% 50%',
+} = Astro.props;
+
+const src = resolveImage(image);
+const usableWidths = src ? widths.filter((w) => w <= src.width) : [];
+if (src && usableWidths.length === 0) usableWidths.push(src.width);
+---
+
+<div class:list={['media', !src && 'media--empty', className]} style={`--aspect: ${aspect}; --pos: ${position}`}>
+  {
+    src ? (
+      <Picture
+        src={src}
+        alt={alt}
+        formats={['avif', 'webp']}
+        widths={usableWidths}
+        sizes={sizes}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        quality={80}
+      />
+    ) : (
+      <div class="plate" role="img" aria-label={alt}>
+        <Icon name="star" class="plate__star" />
+        <span class="plate__text label">{placeholder}</span>
+        {import.meta.env.DEV && <span class="plate__hint">Sustituir en src/assets</span>}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .media {
+    position: relative;
+    aspect-ratio: var(--aspect);
+    overflow: hidden;
+    background: var(--ink-3);
+  }
+
+  .media :global(picture) {
+    height: 100%;
+  }
+
+  .media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos);
+  }
+
+  .plate {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.65rem;
+    padding: 1rem;
+    text-align: center;
+    color: var(--oak);
+    background:
+      repeating-linear-gradient(135deg, transparent 0 14px, rgb(181 134 90 / 0.06) 14px 15px),
+      var(--ink-2);
+    outline: 1px dashed rgb(181 134 90 / 0.45);
+    outline-offset: -10px;
+  }
+
+  .plate :global(.plate__star) {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .plate__hint {
+    font-size: 0.72rem;
+    color: var(--bone-dim);
+    opacity: 0.7;
+  }
+</style>

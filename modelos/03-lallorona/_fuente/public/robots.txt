@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lallorona-sevilla.netlify.app/sitemap-index.xml

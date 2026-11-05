@@ -1,0 +1,80 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+const { owner, taxId, email } = site.legal;
+---
+
+<Layout title="Privacidad y aviso legal · La Llorona" description="Información legal y de privacidad de la web de La Llorona." mobileBar={false}>
+  <article class="legal wrap">
+    <p class="kicker label">Información legal</p>
+    <h1 class="h2">Privacidad y aviso legal</h1>
+
+    <div class="prose">
+      <h2 class="h3">Titular</h2>
+      {
+        owner ? (
+          <p>
+            {owner}
+            {taxId && ` · NIF ${taxId}`}
+            {email && (
+              <>
+                {' · '}
+                <a class="text-link" href={`mailto:${email}`}>{email}</a>
+              </>
+            )}
+            <br />
+            {site.address.street}, {site.address.area}, {site.address.city}.
+          </p>
+        ) : (
+          <p class="draft-chip">Pendiente: datos del titular (nombre o razón social, NIF y correo de contacto)</p>
+        )
+      }
+
+      <h2 class="h3">Qué datos trata esta web</h2>
+      <p>
+        Ninguno. Esta web no tiene formularios que envíen información, no usa cookies, no incluye analítica ni
+        píxeles de seguimiento y no guarda nada en tu navegador.
+      </p>
+      <p>
+        La herramienta “Prepara tu mensaje” solo compone un texto dentro de tu propio navegador. Ese texto no sale de
+        la página hasta que tú decides enviarlo desde tu cuenta de Instagram o WhatsApp. A partir de ahí, la
+        conversación se rige por las condiciones y la política de privacidad de esa plataforma.
+      </p>
+
+      <h2 class="h3">Enlaces externos</h2>
+      <p>
+        Algunos enlaces llevan a Instagram, WhatsApp o Google Maps. Al abrirlos sales de esta web y se aplican las
+        políticas de esos servicios.
+      </p>
+
+      <h2 class="h3">Alojamiento</h2>
+      <p>
+        La web se sirve desde Netlify, que puede registrar datos técnicos de la conexión (como la dirección IP) por
+        motivos de seguridad y funcionamiento.
+      </p>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .legal {
+    padding-block: var(--space-xl) var(--space-2xl);
+    display: grid;
+    gap: var(--space-l);
+  }
+  .prose {
+    display: grid;
+    gap: 1rem;
+  }
+  .prose h2 {
+    margin-top: var(--space-m);
+    font-size: var(--step-2);
+  }
+  .prose p {
+    color: var(--bone-dim);
+  }
+  .prose .draft-chip {
+    justify-self: start;
+    line-height: 1.4;
+  }
+</style>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modelos — Directorio web</title>
+  <meta name="description" content="Directorio de modelos web ultra-modernos: cada página es un proyecto independiente con animaciones avanzadas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/hub.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="top">
+    <span class="top__logo">Modelos<sup>®</sup></span>
+    <span class="top__meta mono">Directorio · <span id="count">00</span> modelos</span>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p class="intro__eyebrow mono">Hub de plantillas web — 2026</p>
+      <h1 class="intro__title">
+        <span class="line"><span>Un directorio de</span></span>
+        <span class="line"><span><em>experiencias</em> web</span></span>
+        <span class="line"><span>que se mueven.</span></span>
+      </h1>
+      <div class="intro__cols">
+        <p>Cada tarjeta abre un <strong>modelo independiente</strong>: un proyecto completo, con su propia estructura, estilos y lógica, que no comparte nada con esta portada.</p>
+        <p>Son plantillas de referencia construidas sobre diseños concretos — scroll 3D, glassmorphism, bento grids, tipografía cinética — listas para adaptar a una marca real.</p>
+      </div>
+      <ul class="marquee mono" aria-label="Tecnologías">
+        <li>Three.js</li><li>GSAP ScrollTrigger</li><li>Lenis</li><li>WebGL Shaders</li><li>CSS avanzado</li><li>Canvas 2D</li>
+        <li aria-hidden="true">Three.js</li><li aria-hidden="true">GSAP ScrollTrigger</li><li aria-hidden="true">Lenis</li><li aria-hidden="true">WebGL Shaders</li><li aria-hidden="true">CSS avanzado</li><li aria-hidden="true">Canvas 2D</li>
+      </ul>
+    </section>
+
+    <section class="models" aria-labelledby="models-title">
+      <div class="models__head">
+        <h2 id="models-title" class="mono">Índice de modelos</h2>
+        <span class="mono">Haz clic para abrir</span>
+      </div>
+      <ol class="grid" id="grid"></ol>
+    </section>
+  </main>
+
+  <footer class="foot mono">
+    <span>Escritorio / ProyectosClaude / Modelos</span>
+    <span>Cada modelo vive en <code>/modelos/&lt;nombre&gt;/</code></span>
+  </footer>
+
+  <script src="assets/hub.js"></script>
+</body>
+</html>

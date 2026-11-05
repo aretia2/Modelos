@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Halden HX-60P — Automatic Chronograph</title>
+  <meta name="description" content="Modelo 01 · Landing de relojería con scroll 3D (Three.js + GSAP ScrollTrigger + Lenis).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="loader" aria-hidden="true">
+    <span class="loader__brand">HALDEN</span>
+    <span class="loader__num">0</span>
+  </div>
+
+  <canvas id="webgl" class="webgl" aria-hidden="true"></canvas>
+
+  <header class="nav">
+    <a class="nav__brand" href="#hero" data-goto="#hero">HALDEN</a>
+    <nav class="nav__links" aria-label="Secciones">
+      <a href="#chrono" data-goto="#chrono">Chronograph</a>
+      <a href="#heart" data-goto="#heart">Movement</a>
+      <a href="#bracelet" data-goto="#bracelet">Bracelet</a>
+      <a href="#colors" data-goto="#colors">Finishes</a>
+    </nav>
+    <a class="nav__hub" href="../../index.html">← Hub</a>
+  </header>
+
+  <aside class="hud" aria-hidden="true">
+    <span class="hud__index">01</span>
+    <span class="hud__bar"><i></i></span>
+    <span class="hud__total">08</span>
+  </aside>
+
+  <main>
+    <!-- 01 · Portada -->
+    <section id="hero" class="sec sec--hero" data-state="hero">
+      <div class="sec__sticky">
+        <svg class="arc arc--hero" viewBox="0 0 600 600" aria-hidden="true"><path d="M60 300a240 240 0 0 1 480 0"/></svg>
+        <h1 class="hero__title">
+          <span class="hero__l" data-split>HX</span>
+          <span class="hero__r" data-split>60P</span>
+        </h1>
+        <p class="hero__kicker" data-reveal style="--d:.5s">Automatic chronograph — Edition 01</p>
+        <div class="hero__model" data-reveal style="--d:.7s">
+          <span>Model</span>
+          <strong>146GR</strong>
+        </div>
+        <div class="hero__scroll" data-reveal style="--d:.9s">
+          <span>Scroll to discover</span>
+          <i></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 · Cronógrafo (vista trasera) -->
+    <section id="chrono" class="sec" data-state="chrono">
+      <div class="sec__sticky">
+        <span class="ghost ghost--tl" data-reveal>146GR</span>
+        <div class="col col--left">
+          <p class="label" data-reveal style="--d:.05s">Chronograph</p>
+          <p class="body" data-reveal style="--d:.15s">A contemporary interpretation of the chronograph, combining precision engineering with refined aesthetics. Designed to capture every moment with accuracy and elegance.</p>
+          <p class="label" data-reveal style="--d:.3s">Automatic Movement</p>
+          <p class="body body--strong" data-reveal style="--d:.4s">Powered by a high-performance automatic calibre, delivering precision and a smooth sweeping motion visible through the sapphire caseback.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 · Perfil -->
+    <section id="profile" class="sec" data-state="profile">
+      <div class="sec__sticky">
+        <h2 class="vertical" data-split>HX</h2>
+        <div class="col col--left col--bottom">
+          <p class="label" data-reveal>Slim profile</p>
+          <p class="big-num" data-reveal style="--d:.1s">11.4<small>mm</small></p>
+          <p class="body" data-reveal style="--d:.2s">A domed sapphire crystal and a sculpted mid-case keep the chronograph low on the wrist.</p>
+        </div>
+        <dl class="specs" data-reveal style="--d:.25s">
+          <div><dt>Case</dt><dd>42 mm</dd></div>
+          <div><dt>Lug to lug</dt><dd>49 mm</dd></div>
+          <div><dt>Water resistance</dt><dd>100 m</dd></div>
+          <div><dt>Crystal</dt><dd>Sapphire AR</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 04 · Corazón mecánico (despiece) -->
+    <section id="heart" class="sec" data-state="heart">
+      <div class="sec__sticky">
+        <div class="col col--left col--top">
+          <h2 class="title-sm" data-split>MECHANICAL</h2>
+          <h2 class="title-sm" data-split>HEART</h2>
+          <svg class="icon" viewBox="0 0 40 40" data-reveal style="--d:.3s" aria-hidden="true">
+            <circle cx="20" cy="20" r="18"/><circle cx="20" cy="20" r="7"/><path d="M20 2v6M20 32v6M2 20h6M32 20h6"/>
+          </svg>
+          <p class="label" data-reveal style="--d:.35s">Automatic Movement</p>
+          <p class="body body--strong" data-reveal style="--d:.45s">The movement regulates the balance wheel for consistent and precise timing — 28,800 vibrations per hour, 72 hours of reserve.</p>
+          <p class="label" data-reveal style="--d:.55s">Diameter</p>
+          <p class="body body--strong" data-reveal style="--d:.6s">30 mm</p>
+        </div>
+        <div class="jewels" data-reveal style="--d:.3s">
+          <span class="jewels__num">0</span><span class="jewels__mark">′</span>
+          <span class="jewels__cap">jewels</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 · Brazalete -->
+    <section id="bracelet" class="sec" data-state="bracelet">
+      <div class="sec__sticky">
+        <div class="center-top">
+          <h2 class="title-md" data-split>BRACELET</h2>
+          <p class="body body--center" data-reveal style="--d:.3s">Three-row solid link bracelet, alternating polished and brushed surfaces for a fluid, tactile fit.</p>
+        </div>
+        <span class="ghost ghost--bottom" data-reveal style="--d:.2s">HX—60P</span>
+      </div>
+    </section>
+
+    <!-- 06 · Silver steel -->
+    <section id="steel" class="sec" data-state="steel">
+      <div class="sec__sticky">
+        <svg class="arc arc--steel" viewBox="0 0 600 600" aria-hidden="true"><path d="M60 300a240 240 0 0 1 480 0"/></svg>
+        <h2 class="mega">
+          <span data-split>SILVER</span>
+          <span data-split>STEEL</span>
+        </h2>
+        <p class="caption" data-reveal style="--d:.4s">904L stainless steel,<br>hand-finished in 46 steps.</p>
+      </div>
+    </section>
+
+    <!-- 07 · Acabados -->
+    <section id="colors" class="sec" data-state="colors">
+      <div class="sec__sticky">
+        <h2 class="hero__title hero__title--faint">
+          <span class="hero__l" data-split>HX</span>
+          <span class="hero__r" data-split>60P</span>
+        </h2>
+        <div class="finish" data-reveal style="--d:.4s">
+          <p class="label">Choose your finish — <span class="finish__name">Silver Steel</span></p>
+          <div class="finish__list" role="group" aria-label="Acabados">
+            <button class="is-active" data-finish="silver"><i style="--c:#d9dbde"></i>Silver</button>
+            <button data-finish="black"><i style="--c:#36383c"></i>Black</button>
+            <button data-finish="gold"><i style="--c:#e3bb6e"></i>Gold</button>
+            <button data-finish="rose"><i style="--c:#dda58f"></i>Rose</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 · Cierre -->
+    <section id="finale" class="sec sec--last" data-state="finale">
+      <div class="sec__sticky">
+        <h2 class="stack">
+          <span data-split>TIMELESS</span>
+          <span data-split>AUTOMATIC</span>
+          <span data-split>42MM</span>
+          <span data-split>WATCH</span>
+        </h2>
+        <div class="cta" data-reveal style="--d:.5s">
+          <p class="body">From <strong>€4,850</strong> · Limited to 600 pieces</p>
+          <div class="cta__row">
+            <a class="btn" href="#hero" data-goto="#hero">Reserve yours</a>
+            <a class="btn btn--ghost" href="../../index.html">← Back to hub</a>
+          </div>
+        </div>
+        <footer class="foot">© 2026 Halden · Modelo 01 — Hub de modelos web</footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="js/watch.js"></script>
+  <script src="js/scene.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+---
+import { primaryContact, site } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<div class="mobile-bar" data-mobile-bar>
+  <a class="btn btn--primary go" href={primaryContact.href} target="_blank" rel="noopener">
+    Pide tu cita
+  </a>
+  <a class="btn btn--ghost ig" href={site.instagram.url} target="_blank" rel="noopener" aria-label="Instagram de La Llorona">
+    <Icon name="instagram" />
+  </a>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-mobile-bar]');
+  // Se oculta mientras se ve el hero, la sección de cita, el contacto o el pie: ahí ya hay botones.
+  const zones = ['[data-hero]', '#cita', '#contacto', 'footer']
+    .map((s) => document.querySelector(s))
+    .filter((el): el is Element => el !== null);
+  if (bar && zones.length && 'IntersectionObserver' in window) {
+    const visible = new Set<Element>(zones.slice(0, 1));
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) e.isIntersecting ? visible.add(e.target) : visible.delete(e.target);
+      bar.classList.toggle('is-visible', visible.size === 0);
+    });
+    zones.forEach((z) => io.observe(z));
+  }
+</script>
+
+<style>
+  .mobile-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.6rem var(--gutter) max(0.6rem, env(safe-area-inset-bottom));
+    background: rgb(14 13 12 / 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid var(--color-border);
+    transform: translateY(110%);
+    visibility: hidden;
+    transition:
+      transform 0.35s var(--ease),
+      visibility 0s linear 0.35s;
+  }
+
+  .mobile-bar.is-visible {
+    transform: none;
+    visibility: visible;
+    transition:
+      transform 0.35s var(--ease),
+      visibility 0s;
+  }
+
+  .go {
+    flex: 1;
+  }
+
+  .ig {
+    width: 3.25rem;
+    padding: 0;
+  }
+
+  .ig :global(svg) {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  @media (min-width: 960px) {
+    .mobile-bar {
+      display: none;
+    }
+  }
+</style>

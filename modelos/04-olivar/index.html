@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Olivar — Casa de cristal entre olivos</title>
+  <meta name="description" content="Modelo 04 · Alojamiento rural con recorrido 3D ligado al scroll (Three.js + GSAP ScrollTrigger + Lenis) y calendario de reservas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,300..900;1,62..125,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ===== Navegación ===== -->
+  <header class="nav" data-theme="dark">
+    <a class="nav__brand" href="#casa" data-goto="#casa" aria-label="Olivar, inicio">
+      <svg viewBox="0 0 92 30" aria-hidden="true">
+        <rect x="1" y="1" width="90" height="28" rx="3"/>
+        <path d="M8 9h22M10 9v13M28 9v13" />
+        <text x="36" y="20.5">OLIVAR</text>
+      </svg>
+    </a>
+    <nav class="nav__pill" aria-label="Secciones">
+      <a href="#casa" data-goto="#casa" data-nav="casa">La casa</a>
+      <a href="#pisos" data-goto="#pisos" data-nav="pisos">Los pisos</a>
+      <a href="#galeria" data-goto="#galeria" data-nav="galeria">Galería</a>
+      <a href="#disponibilidad" data-goto="#disponibilidad" data-nav="disponibilidad">Disponibilidad</a>
+      <button type="button" class="nav__owner" data-owner>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Propietario
+      </button>
+      <a class="nav__cta" href="#disponibilidad" data-goto="#disponibilidad">Reservar</a>
+    </nav>
+    <button type="button" class="nav__burger" aria-label="Abrir menú" aria-expanded="false"><i></i><i></i></button>
+    <a class="nav__hub" href="../../index.html">← Volver al hub</a>
+  </header>
+
+  <main>
+    <!-- ===== 01 · Portada + recorrido 3D ===== -->
+    <section id="casa" class="tour" data-nav-section="casa" data-theme="dark">
+      <div class="tour__sticky">
+        <div class="tour__sky" aria-hidden="true"></div>
+        <h1 class="tour__title" aria-label="Olivar">
+          <span>O</span><span>L</span><span>I</span><span>V</span><span>A</span><span>R</span>
+        </h1>
+        <canvas id="webgl" class="tour__canvas" aria-hidden="true"></canvas>
+        <div class="tour__shade" aria-hidden="true"></div>
+
+        <div class="hero">
+          <p class="hero__claim">Encuentra tu alojamiento<br><em>perfecto.</em></p>
+          <form class="booker" data-booker>
+            <label class="booker__field">
+              <span class="booker__lbl">Piso</span>
+              <select name="piso" aria-label="Elige piso">
+                <option value="0">Primer piso · El jardín</option>
+                <option value="1">Segundo piso · Las copas</option>
+              </select>
+            </label>
+            <div class="booker__field booker__field--guests">
+              <span class="booker__lbl">Huéspedes</span>
+              <div class="stepper">
+                <button type="button" data-step="-1" aria-label="Quitar huésped">−</button>
+                <output name="guests">2</output>
+                <button type="button" data-step="1" aria-label="Añadir huésped">+</button>
+              </div>
+            </div>
+            <button class="booker__go" type="submit">Ver noches libres <span aria-hidden="true">→</span></button>
+          </form>
+        </div>
+
+        <div class="room" aria-live="polite">
+          <span class="room__lbl">Estás en</span>
+          <span class="room__name" data-room>La casa</span>
+          <span class="room__bar"><i></i></span>
+        </div>
+        <div class="tour__hint" aria-hidden="true"><span>Desliza para entrar</span><i></i></div>
+      </div>
+    </section>
+
+    <!-- ===== 02 · Dos pisos ===== -->
+    <section id="pisos" class="pisos" data-nav-section="pisos" data-theme="light">
+      <div class="pisos__intro">
+        <div class="pisos__introSticky">
+          <svg class="sketch" viewBox="0 0 800 520" aria-hidden="true">
+            <defs>
+              <filter id="wash" x="-10%" y="-10%" width="120%" height="120%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="7" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="14"/>
+                <feGaussianBlur stdDeviation="0.6"/>
+              </filter>
+            </defs>
+            <g class="sketch__house" filter="url(#wash)">
+              <rect x="40" y="300" width="720" height="16"/>
+              <rect x="100" y="316" width="90" height="150"/>
+              <rect x="300" y="316" width="70" height="150"/>
+              <rect x="560" y="316" width="90" height="150"/>
+              <path d="M60 466h680"/>
+            </g>
+            <g class="sketch__tree" filter="url(#wash)"></g>
+          </svg>
+          <h2 class="pisos__title"><span>Dos pisos,</span><em>la misma luz.</em></h2>
+        </div>
+      </div>
+
+      <div class="pisos__grid">
+        <div class="pisos__cards">
+          <article class="card" data-reveal>
+            <figure class="card__media">
+              <img data-shot="salon" alt="Salón del primer piso con sofá, butaca roja y ventanal al jardín" width="720" height="900">
+              <span class="card__chip">34 m² · Jardín a mediodía</span>
+              <button class="card__360" type="button" data-goto="#casa" aria-label="Ver el recorrido 3D"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c3 3 3 13 0 16"/></svg></button>
+              <span class="card__price">desde <b>145 €</b> / noche</span>
+            </figure>
+            <header class="card__head">
+              <div><h3>Primer piso</h3><p><em>El jardín</em></p></div>
+              <p class="card__meta">1 dormitorio<br>2–4 huéspedes</p>
+            </header>
+          </article>
+
+          <article class="card card--low" data-reveal>
+            <figure class="card__media">
+              <img data-shot="dormitorio" alt="Dormitorio del segundo piso con cama doble frente al cristal" width="720" height="900">
+              <span class="card__chip">34 m² · Copas y horizonte</span>
+              <button class="card__360" type="button" data-goto="#casa" aria-label="Ver el recorrido 3D"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c3 3 3 13 0 16"/></svg></button>
+              <span class="card__price">desde <b>165 €</b> / noche</span>
+            </figure>
+            <header class="card__head">
+              <div><h3>Segundo piso</h3><p><em>Las copas</em></p></div>
+              <p class="card__meta">1 dormitorio<br>2 huéspedes</p>
+            </header>
+          </article>
+        </div>
+
+        <aside class="specs" data-reveal>
+          <h4>En la casa</h4>
+          <dl>
+            <div><dt>Altura</dt><dd>2,9 m</dd></div>
+            <div><dt>Fachadas</dt><dd>De cristal</dd></div>
+            <div><dt>Terraza</dt><dd>Cubierta</dd></div>
+            <div><dt>Cocina</dt><dd>Con isla</dd></div>
+            <div><dt>Comedor</dt><dd>Mesa para 8</dd></div>
+            <div><dt>Baño</dt><dd>Bañera exenta</dd></div>
+            <div><dt>Estudio</dt><dd>Escritorio</dd></div>
+            <div><dt>Jardín</dt><dd>Con olivos</dd></div>
+          </dl>
+          <p>Los dos pisos comparten el jardín y la terraza. Cada uno tiene su propia entrada y su propia luz.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===== 03 · Vive entre olivos ===== -->
+    <section id="olivos" class="olivos" data-nav-section="pisos" data-theme="dark">
+      <div class="olivos__sticky">
+        <p class="olivos__kicker"><small>Una casa de cristal</small>plantada en un olivar.</p>
+        <p class="olivos__aside"><b>No es un hotel,</b><em>es una casa.</em></p>
+
+        <div class="olivos__lamp" aria-hidden="true">
+          <i class="olivos__cord"></i>
+          <svg viewBox="0 0 80 60"><path d="M40 2 L72 52 H8 Z"/><ellipse cx="40" cy="52" rx="32" ry="5"/></svg>
+          <span class="olivos__glow"></span>
+        </div>
+
+        <svg class="olivos__tree" viewBox="0 0 300 420" aria-hidden="true"></svg>
+
+        <svg class="olivos__pot" viewBox="0 0 160 200" aria-hidden="true">
+          <g class="pot__leaves"></g>
+          <path class="pot__body" d="M30 110 h100 l-12 78 a6 6 0 0 1 -6 5 h-64 a6 6 0 0 1 -6 -5 z"/>
+          <rect class="pot__rim" x="24" y="100" width="112" height="16" rx="4"/>
+        </svg>
+
+        <h2 class="olivos__title" aria-label="Vive entre olivos.">
+          <span class="w w--1">VIVE</span><span class="w w--2">ENTRE</span><br><span class="w w--3">OLIVOS.</span>
+        </h2>
+      </div>
+    </section>
+
+    <!-- ===== 04 · Una sola planta (galería) ===== -->
+    <section id="galeria" class="planta" data-nav-section="galeria" data-theme="dark">
+      <div class="planta__sticky">
+        <p class="planta__ghost" aria-hidden="true"><span>HORA DORADA · HORA DORADA · HORA DORADA · </span></p>
+        <div class="planta__inner">
+          <figure class="planta__media">
+            <img data-shot="comedor" alt="Comedor y cocina con isla bajo tres lámparas" class="is-on">
+            <img data-shot="cocina" alt="Cocina abierta con taburetes y luz de tarde">
+            <img data-shot="salon2" alt="Salón mirando hacia el olivar">
+            <img data-shot="terraza" alt="Terraza cubierta con el voladizo de hormigón">
+            <figcaption><span data-gal-i>01</span> / 04 · <span data-gal-cap>Comedor</span></figcaption>
+          </figure>
+          <div class="planta__text">
+            <h2>Una sola planta,<em>de punto a punto.</em></h2>
+            <p class="planta__lead">Treinta y cuatro metros de casa con cristal a los dos lados. El sol de la tarde entra por el salón y cruza hasta la cocina.</p>
+            <ul class="planta__stats">
+              <li><small>Largo</small><b>34 m</b></li>
+              <li><small>Altura</small><b>2,9 m</b></li>
+              <li><small>Terraza</small><b>Perimetral</b></li>
+            </ul>
+            <p class="planta__note">Dormitorio en un extremo, estudio en el otro y, entre los dos, salón, comedor y cocina abiertos al jardín.</p>
+            <a class="btn-ghost" href="#casa" data-goto="#casa">Recórrela otra vez <span aria-hidden="true">↑</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 05 · Disponibilidad ===== -->
+    <section id="disponibilidad" class="dispo" data-nav-section="disponibilidad" data-theme="light">
+      <div class="dispo__wrap">
+        <header class="dispo__head" data-reveal>
+          <p class="eyebrow">Disponibilidad</p>
+          <h2>Elige tus <em>noches.</em></h2>
+        </header>
+
+        <div class="dispo__panel" data-reveal>
+          <div class="cal">
+            <div class="cal__tabs" role="tablist" aria-label="Piso">
+              <button type="button" role="tab" aria-selected="true" data-piso="0">Primer piso</button>
+              <button type="button" role="tab" aria-selected="false" data-piso="1">Segundo piso</button>
+            </div>
+            <div class="cal__nav">
+              <button type="button" class="cal__arrow" data-cal="-1" aria-label="Mes anterior">‹</button>
+              <button type="button" class="cal__arrow" data-cal="1" aria-label="Mes siguiente">›</button>
+            </div>
+            <div class="cal__months" data-months></div>
+            <ul class="cal__legend">
+              <li><i class="lg lg--free"></i>Libre</li>
+              <li><i class="lg lg--sel"></i>Seleccionado</li>
+              <li><i class="lg lg--busy"></i>No disponible</li>
+            </ul>
+          </div>
+
+          <aside class="quote">
+            <h3 data-q-title>Primer piso · El jardín</h3>
+            <p class="quote__sub" data-q-sub>Hasta 4 huéspedes · 145 € la noche</p>
+            <div class="quote__dates">
+              <div><small>Llegada</small><span data-q-in>Elige fecha</span></div>
+              <div><small>Salida</small><span data-q-out>Elige fecha</span></div>
+            </div>
+            <div class="quote__guests">
+              <div><small>Huéspedes</small><span data-q-gsub>Adultos y niños</span></div>
+              <div class="stepper stepper--light">
+                <button type="button" data-qstep="-1" aria-label="Quitar huésped">−</button>
+                <output data-q-guests>2</output>
+                <button type="button" data-qstep="1" aria-label="Añadir huésped">+</button>
+              </div>
+            </div>
+            <p class="quote__msg" data-q-msg>Pulsa en dos fechas para marcar la estancia.</p>
+            <button type="button" class="quote__go" data-q-go disabled>Solicitar reserva <span aria-hidden="true">→</span></button>
+          </aside>
+        </div>
+        <p class="dispo__foot">Estancia mínima: 2 noches · Llegada a partir de las 16:00 · Salida hasta las 12:00 · Las fechas en gris ya están reservadas.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot" data-theme="dark">
+    <div class="foot__big" aria-hidden="true">OLIVAR</div>
+    <div class="foot__row">
+      <p>Casa de cristal entre olivos.<br>Dos pisos, un jardín.</p>
+      <nav aria-label="Pie">
+        <a href="#casa" data-goto="#casa">La casa</a>
+        <a href="#pisos" data-goto="#pisos">Los pisos</a>
+        <a href="#disponibilidad" data-goto="#disponibilidad">Reservar</a>
+      </nav>
+      <a class="foot__hub" href="../../index.html">← Volver al hub</a>
+    </div>
+    <p class="foot__legal">Modelo 04 · Escena 3D procedural (Three.js) · Contenido de demostración</p>
+  </footer>
+
+  <!-- ===== Panel del propietario ===== -->
+  <div class="owner" role="dialog" aria-modal="true" aria-labelledby="owner-title" hidden>
+    <div class="owner__win">
+      <aside class="owner__side">
+        <p class="owner__logo">Dueño.</p>
+        <ul>
+          <li>Resumen</li><li class="is-on">Mis casas</li><li>Reservas</li><li>Calendario</li><li>Mensajes</li><li>Ajustes</li>
+        </ul>
+      </aside>
+      <div class="owner__main">
+        <header>
+          <h2 id="owner-title">Mis casas</h2>
+          <button type="button" class="owner__new">+ Nuevo espacio</button>
+          <button type="button" class="owner__close" aria-label="Cerrar panel">×</button>
+        </header>
+        <div class="owner__grid">
+          <figure><img data-shot="salon" alt=""><figcaption><b>Primer piso</b> · El jardín <span>● 3 reservas</span></figcaption></figure>
+          <figure><img data-shot="dormitorio" alt=""><figcaption><b>Segundo piso</b> · Las copas <span>● 2 reservas</span></figcaption></figure>
+        </div>
+        <p class="owner__hint">Vista de demostración del panel de propietario. Los datos no son reales.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="js/house.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

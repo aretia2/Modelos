@@ -1,0 +1,37 @@
+---
+/** Trabajos en portada: seis huecos en dos pantallas de tres (los que falten, "próximamente") y un "Ver más" discreto. */
+import { works } from '../data/gallery';
+import WorkStream from './WorkStream.astro';
+
+const HOME_SLOTS = 6;
+---
+
+<section class="section gallery" id="trabajos" aria-labelledby="trabajos-title">
+  <div class="wrap">
+    <p class="kicker label">Trabajos</p>
+
+    <div class="intro">
+      <h2 class="h2" id="trabajos-title" data-reveal>Hecho aquí.</h2>
+      <p class="lede muted" data-reveal style="--delay:.1s">
+        Una selección de piezas de los residentes. Baja para verlas salir y abre cualquiera para verla en grande.
+      </p>
+    </div>
+
+    <WorkStream works={works.slice(0, HOME_SLOTS)} slots={HOME_SLOTS} more={{ href: '/trabajos/', label: 'Ver más', note: `${works.length} piezas` }} />
+  </div>
+</section>
+
+<style>
+  .intro {
+    display: grid;
+    gap: var(--space-s) var(--space-l);
+    margin-bottom: var(--space-xl);
+    align-items: end;
+  }
+
+  @media (min-width: 960px) {
+    .intro {
+      grid-template-columns: 1fr minmax(0, 26rem);
+    }
+  }
+</style>

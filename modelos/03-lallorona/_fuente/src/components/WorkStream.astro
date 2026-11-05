@@ -1,0 +1,545 @@
+---
+/**
+ * Secuencia de trabajos a pantalla completa, en pantallas de tres fotos: el marco se fija y, al hacer
+ * scroll, cada trío se funde sobre el anterior mientras las fotos se alejan despacio (scripts/sequence.ts).
+ * Si el último trío queda incompleto, los huecos se rellenan con una placa de "Se subirá próximamente".
+ * La usan la portada (6 huecos) y la página /trabajos/ (todas). Incluye el visor a pantalla completa.
+ */
+import { getImage } from 'astro:assets';
+import type { Work } from '../data/gallery';
+import { resolveImage } from '../lib/images';
+import Media from './Media.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  works: Work[];
+  /** Huecos totales que se muestran; los que no tienen foto salen como "próximamente". */
+  slots?: number;
+  /** Enlace discreto que aparece en la última pantalla (p. ej. "Ver más" en portada). */
+  more?: { href: string; label: string; note?: string };
+}
+
+const PER_FRAME = 3;
+const { works, more } = Astro.props;
+const slots = Math.max(Astro.props.slots ?? 0, Math.ceil(works.length / PER_FRAME) * PER_FRAME);
+
+const items = await Promise.all(
+  works.map(async (work) => {
+    const src = resolveImage(work.image);
+    const full = src ? await getImage({ src, width: Math.min(src.width, 1800), format: 'webp', quality: 82 }) : null;
+    const caption = [work.title, work.artist && `por ${work.artist}`].filter(Boolean).join(', ');
+    return { ...work, full, caption };
+  }),
+);
+
+type Slot = (typeof items)[number] | null;
+const filled: Slot[] = [...items, ...Array(slots - items.length).fill(null)];
+const frames: Slot[][] = [];
+for (let i = 0; i < filled.length; i += PER_FRAME) frames.push(filled.slice(i, i + PER_FRAME));
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const sizes = '(min-width: 960px) 34vw, 100vw';
+---
+
+<div class="seq" data-seq data-total={pad(slots)}>
+  <div class="seq__sticky" data-seq-sticky>
+    <ul class="seq__frames" role="list" data-gallery>
+      {
+        frames.map((group, f) => (
+          <li class="frame" data-frame data-range={`${pad(f * PER_FRAME + 1)}–${pad(f * PER_FRAME + group.length)}`}>
+            {group.map((item, j) => {
+              const n = pad(f * PER_FRAME + j + 1);
+              return item ? (
+                <div class="work" data-panel>
+                  {item.full ? (
+                    <button
+                      type="button"
+                      class="work__open"
+                      data-full={item.full.src}
+                      data-alt={item.alt}
+                      data-caption={item.caption}
+                      aria-label={`Ampliar: ${item.alt}`}
+                    >
+                      <Media image={item.image} alt={item.alt} aspect="auto" sizes={sizes} position={item.position} />
+                    </button>
+                  ) : (
+                    <Media image={item.image} alt={item.alt} aspect="auto" sizes={sizes} />
+                  )}
+                  <div class="work__cap">
+                    <span class="work__n" aria-hidden="true">{n}</span>
+                    <div>
+                      {item.title && <h3 class="work__title">{item.title}</h3>}
+                      {item.artist && <p class="label">por {item.artist}</p>}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div class="work work--soon" data-panel>
+                  <div class="soon">
+                    <Icon name="star" class="soon__star" />
+                    <p class="label soon__n">Pieza {n}</p>
+                    <p class="soon__text">Se subirá próximamente</p>
+                  </div>
+                </div>
+              );
+            })}
+          </li>
+        ))
+      }
+    </ul>
+    <div class="seq__ui">
+      <span class="label seq__count" aria-hidden="true" data-seq-count>{frames[0] && `01–${pad(frames[0].length)} / ${pad(slots)}`}</span>
+      <span class="seq__bar" aria-hidden="true"><span data-seq-bar></span></span>
+      {
+        more && (
+          <a class="seq__more label" href={more.href}>
+            {more.label}
+            {more.note && <span class="seq__more-note">· {more.note}</span>}
+            <Icon name="arrow" />
+          </a>
+        )
+      }
+    </div>
+    <div class="seq__shade" data-seq-shade></div>
+  </div>
+</div>
+
+<dialog class="lightbox" aria-label="Visor de trabajos" data-lightbox>
+  <div class="lb__top">
+    <p class="label lb__count" aria-live="polite" data-lb-count></p>
+    <button type="button" class="lb__btn" data-lb-close>
+      <span class="label">Cerrar</span>
+      <Icon name="close" />
+    </button>
+  </div>
+  <figure class="lb__figure">
+    <img data-lb-img alt="" />
+    <figcaption class="label muted" data-lb-caption></figcaption>
+  </figure>
+  <button type="button" class="lb__nav lb__prev" aria-label="Anterior" data-lb-prev><Icon name="prev" /></button>
+  <button type="button" class="lb__nav lb__next" aria-label="Siguiente" data-lb-next><Icon name="next" /></button>
+</dialog>
+
+<script>
+  import '../scripts/gallery';
+  import '../scripts/sequence';
+  import '../scripts/rise';
+</script>
+
+<style>
+  /*
+   * Sin JS (o con movimiento reducido) cada trío es una pantalla completa, uno tras otro.
+   * Con .seq-on (scripts/sequence.ts) los tríos se apilan dentro de un marco fijado y se funden con el scroll.
+   */
+  .seq {
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+  }
+
+  .seq__frames {
+    display: grid;
+  }
+
+  /* Escritorio: tres columnas. Móvil: una grande arriba y dos debajo. */
+  .frame {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px;
+    height: 100vh;
+    height: 100svh;
+    background: var(--ink);
+  }
+
+  .work {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--ink-2);
+  }
+
+  .work__open {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+
+  .work :global(.media) {
+    height: 100%;
+    aspect-ratio: auto;
+  }
+
+  .work :global(img) {
+    will-change: transform;
+  }
+
+  /* Degradado para que el pie de foto se lea sobre cualquier imagen. */
+  .work:not(.work--soon)::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 0;
+    background: linear-gradient(transparent, rgb(14 13 12 / 0.85));
+    pointer-events: none;
+  }
+
+  .work__cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    padding: 0 clamp(0.75rem, 2vw, 1.5rem) calc(var(--space-m) + 3rem);
+    pointer-events: none;
+  }
+
+  .work__n {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--step-4);
+    line-height: 0.75;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--oak);
+  }
+
+  .work__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--step-2);
+    line-height: 1;
+    text-wrap: balance;
+  }
+
+  /* Hueco sin foto todavía. */
+  .soon {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.6rem;
+    height: 100%;
+    padding: var(--space-m);
+    text-align: center;
+    border: 1px dashed rgb(236 230 218 / 0.18);
+  }
+
+  .soon :global(.soon__star) {
+    width: 1.6rem;
+    height: 1.6rem;
+    color: var(--oak);
+  }
+
+  .soon__n {
+    color: var(--oak);
+  }
+
+  .soon__text {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--step-3);
+    line-height: 0.95;
+    max-width: 10ch;
+    color: var(--bone-dim);
+  }
+
+  .seq__ui,
+  .seq__shade {
+    display: none;
+  }
+
+  /* ---- Modo secuencia ---- */
+
+  :global(.seq-on) .seq__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  :global(.seq-on) .seq__frames {
+    position: absolute;
+    inset: 0;
+  }
+
+  :global(.seq-on) .frame {
+    position: absolute;
+    inset: 0;
+    height: auto;
+    background: none;
+    pointer-events: none;
+  }
+
+  :global(.seq-on) .frame.is-active {
+    pointer-events: auto;
+  }
+
+  /* Por panel: --o fundido y --s escala (se aleja según avanza). Por trío: --w peso de los pies de foto. */
+  :global(.seq-on) .work {
+    opacity: var(--o, 1);
+  }
+
+  :global(.seq-on) .work :global(img) {
+    transform: scale(var(--s, 1));
+  }
+
+  :global(.seq-on) .work__cap,
+  :global(.seq-on) .soon > * {
+    opacity: var(--w, 0);
+    transform: translate3d(0, calc((1 - var(--w, 0)) * 1.5rem), 0);
+  }
+
+  :global(.seq-on) .seq__ui {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    padding: 0 clamp(0.75rem, 2vw, 1.5rem) var(--space-m);
+  }
+
+  .seq__count {
+    color: var(--oak);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .seq__bar {
+    position: relative;
+    flex: 1;
+    height: 1px;
+    background: rgb(236 230 218 / 0.25);
+  }
+
+  .seq__bar span {
+    position: absolute;
+    inset: -1px 0;
+    background: var(--tear);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+  }
+
+  /* "Ver más": discreto, al final de la barra; solo aparece (y se puede pulsar) en la última pantalla. */
+  .seq__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: none;
+    min-height: var(--tap);
+    padding: 0 0.9rem;
+    border: 1px solid rgb(236 230 218 / 0.35);
+    background: rgb(14 13 12 / 0.45);
+    color: var(--bone);
+    white-space: nowrap;
+    text-decoration: none;
+    transition:
+      background-color 0.25s var(--ease),
+      color 0.25s var(--ease),
+      border-color 0.25s var(--ease),
+      opacity 0.4s var(--ease);
+  }
+
+  :global(.seq-on) .seq:not(.is-last) .seq__more {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .seq__more :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.25s var(--ease);
+  }
+
+  .seq__more:hover,
+  .seq__more:focus-visible {
+    background: var(--bone);
+    color: var(--ink);
+    border-color: var(--bone);
+  }
+
+  .seq__more:hover :global(svg),
+  .seq__more:focus-visible :global(svg) {
+    transform: translateX(3px);
+  }
+
+  /* Al final la escena se oscurece, como en la secuencia del estadio. */
+  :global(.seq-on) .seq__shade {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: block;
+    background: var(--ink);
+    opacity: var(--shade, 0);
+    pointer-events: none;
+  }
+
+  @media (max-width: 959px) {
+    .frame {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: 58fr 42fr;
+    }
+    .frame > :first-child {
+      grid-column: span 2;
+    }
+    :global(.seq-on) .seq__ui {
+      padding-bottom: calc(var(--space-s) + 4.5rem + env(safe-area-inset-bottom));
+    }
+    /* La de arriba no choca con nada; las de abajo dejan sitio a la barra de progreso y a "Pide tu cita". */
+    .frame > :first-child .work__cap {
+      padding-bottom: 0.9rem;
+    }
+    .frame > :not(:first-child) .work__cap {
+      padding-bottom: calc(var(--space-s) + 8rem + env(safe-area-inset-bottom));
+    }
+    .frame > :not(:first-child) .work__n {
+      display: none;
+    }
+    .work__n {
+      font-size: var(--step-3);
+    }
+    .work__title {
+      font-size: var(--step-1);
+    }
+    .soon__text {
+      font-size: var(--step-1);
+    }
+    .frame > :not(:first-child) .soon {
+      padding-bottom: calc(var(--space-s) + 8rem + env(safe-area-inset-bottom));
+    }
+    .seq__more-note {
+      display: none;
+    }
+  }
+
+  /* ---- Visor ---- */
+
+  .lightbox {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgb(14 13 12 / 0.97);
+    color: var(--bone);
+    overscroll-behavior: contain;
+  }
+
+  .lightbox[open] {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    animation: lb-in 0.3s var(--ease);
+  }
+
+  .lightbox::backdrop {
+    background: var(--ink-veil);
+  }
+
+  @keyframes lb-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .lb__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem var(--gutter);
+    min-height: var(--header-h);
+  }
+
+  .lb__count {
+    color: var(--oak);
+  }
+
+  .lb__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.75rem;
+    padding: 0 0.5rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .lb__btn :global(svg) {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .lb__figure {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    justify-items: center;
+    gap: 0.75rem;
+    min-height: 0;
+    padding: 0 var(--gutter) var(--space-m);
+    touch-action: pan-y;
+  }
+
+  .lb__figure img {
+    max-width: 100%;
+    max-height: 100%;
+    min-height: 0;
+    object-fit: contain;
+    align-self: center;
+  }
+
+  .lb__nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--color-border);
+    background: rgb(14 13 12 / 0.7);
+    cursor: pointer;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+
+  .lb__nav:hover {
+    background: var(--bone);
+    color: var(--ink);
+  }
+
+  .lb__nav :global(svg) {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .lb__prev {
+    left: var(--gutter);
+  }
+
+  .lb__next {
+    right: var(--gutter);
+  }
+
+  .lb__nav[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 639px) {
+    .lb__nav {
+      top: auto;
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      transform: none;
+    }
+    .lb__figure {
+      padding-bottom: 5rem;
+    }
+  }
+</style>
